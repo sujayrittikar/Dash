@@ -3,9 +3,9 @@ import time
 import hashlib
 
 import praw
-import pymongo
+import pymongo.errors as mongo_errors
 
-from mongo_conn import get_mongo_conn
+from dash_project.mongo_conn import get_mongo_conn
 
 
 REDDIT_SOURCE = praw.Reddit(
@@ -57,14 +57,16 @@ def insert_to_mongo(posts_list: list, city: str) -> None:
     """)
 
 
-def main():
+def main() -> int:
     for city in SUBS:
         posts_list = get_top_hots(city)
 
         try:
             insert_to_mongo(posts_list, city)
-        except pymongo.errors.BulkWriteError:
+        except mongo_errors.BulkWriteError:
             time.sleep(2)
+    
+    return 0
 
 
 if __name__ == '__main__':
