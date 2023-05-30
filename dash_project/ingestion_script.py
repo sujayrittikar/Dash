@@ -3,7 +3,7 @@ import time
 import hashlib
 
 import praw
-import pymongo
+import pymongo.errors as mongo_errors
 
 from dash_project.mongo_conn import get_mongo_conn
 
@@ -63,7 +63,7 @@ def main() -> int:
 
         try:
             insert_to_mongo(posts_list, city)
-        except pymongo.errors.BulkWriteError:
+        except mongo_errors.BulkWriteError:
             time.sleep(2)
     
     return 0
